@@ -27,10 +27,24 @@ todo:
   - `const [state, dispatch] = useReducer(reducer, initialState);`
   - 指定初始state：**initialState**使用state的值
   - 惰性初始化： **便于reset数据**，`const [state, dispatch] = useReducer(reducer, initialState,init);`
-- [useCallback](https://reactjs.org/docs/hooks-reference.html#usecallback)
 - [useMemo](https://reactjs.org/docs/hooks-reference.html#usememo)
+  > ⚠️ 具体的性能优化方式是什么？
+  > ⚠️ 传入**useMemo**的函数会在渲染期间执行，**副作用**的操作应该放在**useEffect**中。
+  > 优化性能？如何来优化性能？【避免每次渲染时都进行高开销的计算】
+  - `const memoizedValue = useMemo(() => computeExpensiveValue(deps), [deps]);`
+- [useCallback](https://reactjs.org/docs/hooks-reference.html#usecallback)
+  > ⚠️ 具体的性能优化方式是什么？
+  > useCallback(fn, deps) 相当于 useMemo(() => fn, deps)。
+  - `const memoizedCallback = useCallback(callback, [deps]);`
 - [useRef](https://reactjs.org/docs/hooks-reference.html#useref)
-- [useImperativeHandle]()
+  > 返回可变的ref对象,返回的 ref 对象在组件的整个生命周期内持续存在。
+  > ⚠️ 确保ref.current对象存在，保证代码的健壮性。
+  - `const ref = useRef(null);`
+- [useImperativeHandle](https://zh-hans.reactjs.org/docs/hooks-reference.html#useimperativehandle)
+  > **useImperativeHandle**可以让你在使用**ref**时自定义暴露给父组件的实例值。
+  > 
+  > 结合forwardRef使用 ![](public/forwardRef.png)
+  - `useImperativeHandle(ref, createHandle, [deps])`
 - [useLayoutEffect](https://reactjs.org/docs/hooks-reference.html#uselayouteffect)
 - [useCustomHooks](https://reactjs.org/docs/hooks-custom.html#extracting-a-custom-hook)
 
