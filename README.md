@@ -20,6 +20,12 @@ todo:
     - `<MyContext.Consumer>{(value) => {}}</MyContext.Consumer>`
     - `useContext(MyContext)`
 - [useReducer](https://reactjs.org/docs/hooks-reference.html#usereducer)
+  > 适用场景：state逻辑较复杂且包含多个子值，或者下一个state依赖于之前的state等情况。
+  >
+  > reducer是将数据内容于更新行为分开的。UI与业务逻辑分开维护。
+  - `const [state, dispatch] = useReducer(reducer, initialState);`
+  - 指定初始state：**initialState**使用state的值
+  - 惰性初始化： **便于reset数据**，`const [state, dispatch] = useReducer(reducer, initialState,init);`
 - [useCallback](https://reactjs.org/docs/hooks-reference.html#usecallback)
 - [useMemo](https://reactjs.org/docs/hooks-reference.html#usememo)
 - [useRef](https://reactjs.org/docs/hooks-reference.html#useref)
