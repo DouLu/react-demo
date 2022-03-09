@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>flux demo</title>
+</head>
+
+<body>
+
+  <div id="counter">
+    <span></span>
+    <button>increase</button>
+    <button>decrease</button>
+  </div>
+</body>
+<script>
+  const View = function (subscribeToStore, increase, decrease) {
+    var value = null;
+    var el = document.querySelector('#counter');
+    var display = el.querySelector('span');
+    var [increaseBtn, decreaseBtn] = Array.from(el.querySelectorAll('button'));
+    var render = () => (display.innerHTML = value);
+    var updateState = (store) => {
+      display.innerHTML = store.getValue()
+    };
+    subscribeToStore(updateState, render);
+    increaseBtn.addEventListener('click', increase);
+    decreaseBtn.addEventListener('click', decrease);
+  };
+
+  const INCREASE = 'INCREASE';
+  const DECREASE = 'DECREASE';
+
+  const CounterStore = {
+    _data: { value: 0 },
+    getValue: function () {
+      return this._data.value;
+    },
+    update: function (action, change) {
+      if (action.type === INCREASE) {
+        this._data.value += 1;
+      } else if (action.type === DECREASE) {
+        this._data.value -= 1;
+      }
+      change();
+    }
+  };
+
+  const Dispatcher = function () {
+    return {
+      _stores: [],
+      register: function (store) {
+        if (!store || !store.update) {
+          throw new Error(
+            'You should provide a store that has an `update` method'
+          );
+        } else {
+          const consumers = [];
+          const change = function () {
+            consumers.forEach(function (consumer) {
+              consumer(store);
+            });
+          };
+          const subscribe = function (consumer, noInit) {
+            consumers.push(consumer);
+            !noInit ? consumer(store) : null;
+          };
+          this._stores.push({ store: store, change: change });
+          return subscribe;
+        }
+      },
+      dispatch: function (action) {
+        if (this._stores.length > 0) {
+          this._stores.forEach(function (entry) {
+            entry.store.update(action, entry.change);
+          });
+        }
+      }
+    };
+  };
+  const Fluxiny = {
+    create: function () {
+      var dispatcher = Dispatcher();
+      return {
+        createAction: function (type) {
+          if (!type) {
+            throw new Error("Please, provide action's type.");
+          } else {
+            return function (payload) {
+              return dispatcher.dispatch({
+                type: type,
+                payload: payload
+              });
+            };
+          }
+        },
+        createSubscriber: function (store) {
+          return dispatcher.register(store);
+        }
+      };
+    }
+  };
+
+  const { createAction, createSubscriber } = Fluxiny.create();
+  const counterStoreSubscriber = createSubscriber(CounterStore);
+  const actions = {
+    increase: createAction(INCREASE),
+    decrease: createAction(DECREASE)
+  };
+  View(counterStoreSubscriber, actions.increase, actions.decrease);
+</script>
+
+</html>

@@ -4,6 +4,7 @@ import { ThemeContext, themes } from './hooks/context';
 import ContextDemo from './hooks/ContextDemo';
 import ReducerDemo from './hooks/ReducerDemo';
 import RefDemo from './hooks/RefDemo';
+import Form from './test/test';
 
 function App() {
 	const [render, setRender] = React.useState(false);
@@ -11,6 +12,7 @@ function App() {
 
 	return (
 		<div className="App">
+			<Form />
 			<ThemeContext.Provider value={themes.dark}>
 				<div className="App">
 					<button
