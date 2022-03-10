@@ -48,3 +48,7 @@ todo:
 - [useLayoutEffect](https://reactjs.org/docs/hooks-reference.html#uselayouteffect)
 - [useCustomHooks](https://reactjs.org/docs/hooks-custom.html#extracting-a-custom-hook)
 
+```
+import i18n from 'i18n.ts';
+text = i18n`key`;
+```
